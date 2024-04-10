@@ -1,0 +1,61 @@
+name: Autograding Tests
+'on':
+- push
+- workflow_dispatch
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: '0'
+      id: '0'
+      uses: education/autograding-command-grader@v1
+      with:
+        test-name: '0'
+        setup-command: sudo -H pip3 install pytest
+        command: pytest "hw1_test0.py"
+        timeout: 10
+        max-score: 1
+    - name: '1'
+      id: '1'
+      uses: education/autograding-command-grader@v1
+      with:
+        test-name: '1'
+        setup-command: sudo -H pip3 install pytest
+        command: pytest "hw1_test1.py"
+        timeout: 10
+        max-score: 1
+    - name: '2'
+      id: '2'
+      uses: education/autograding-command-grader@v1
+      with:
+        test-name: '2'
+        setup-command: sudo -H pip3 install pytest
+        command: pytest "hw1_test2.py"
+        timeout: 10
+        max-score: 1
+    - name: '3'
+      id: '3'
+      uses: education/autograding-command-grader@v1
+      with:
+        test-name: '3'
+        setup-command: sudo -H pip3 install pytest
+        command: pytest "hw1_test3.py"
+        timeout: 10
+        max-score: 1
+    - name: Autograding Reporter
+      uses: education/autograding-grading-reporter@v1
+      env:
+        0_RESULTS: "${{steps.0.outputs.result}}"
+        1_RESULTS: "${{steps.1.outputs.result}}"
+        2_RESULTS: "${{steps.2.outputs.result}}"
+        3_RESULTS: "${{steps.3.outputs.result}}"
+      with:
+        runners: '0,1,2,3'
